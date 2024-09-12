@@ -1,3 +1,4 @@
+import { ReturnDocument } from 'mongodb';
 import * as contactServices from '../services/contacts.js';
 import createHttpError from 'http-errors';
 
@@ -30,4 +31,31 @@ export const addContactController = async (req, res) => {
     message: 'Successfully created a contact!',
     data,
   });
+};
+
+export const pathContactController = async (req, res) => {
+  const { contactId } = req.params;
+  const result = await contactServices.updateContact(
+    { _id: contactId },
+    req.body,
+  );
+  if (!result) {
+    throw createHttpError(404, `Contact with id:${contactId} not found`);
+  }
+
+  res.json({
+    status: 200,
+    message: 'Successfully patched a contact!',
+    data: result.data,
+  });
+};
+
+export const deleteContactController = async (req, res) => {
+  const { contactId } = req.params;
+  const data = await contactServices.deleteContact({ _id: contactId });
+  if (!data) {
+    throw createHttpError(404, `Contact with id:${contactId} not found`);
+  }
+
+  res.status(204).send();
 };
