@@ -1,0 +1,15 @@
+import createHttpError from 'http-errors';
+
+const validateBody = (schema) => {
+  const isValid = async (req, res, next) => {
+    try {
+      await schema.validateAsync(req.body, { abortEarly: false });
+    } catch (error) {
+      const validateError = createHttpError(400, error.message);
+      next(validateError);
+    }
+  };
+  return isValid;
+};
+
+export default validateBody;

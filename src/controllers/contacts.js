@@ -1,9 +1,20 @@
 import { ReturnDocument } from 'mongodb';
 import * as contactServices from '../services/contacts.js';
 import createHttpError from 'http-errors';
+import parsePaginationParams from '../utils/parsePaginationParams.js';
+import parseSortParams from '../utils/parseSortParams.js';
+import { sortFields } from '../db/models/Contact.js';
 
 export const getAllContactsController = async (req, res) => {
-  const data = await contactServices.getAllContacts();
+  const { page, perPage } = parsePaginationParams(req.query);
+  const { sortBy, sortOrder } = parseSortParams({ ...req.query, sortFields });
+
+  const data = await contactServices.getContacts({
+    page,
+    perPage,
+    sortBy,
+    sortOrder,
+  });
   res.json({
     status: 200,
     message: 'Successfully found contacts!',
