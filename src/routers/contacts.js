@@ -4,7 +4,7 @@ import {
   deleteContactController,
   getAllContactsController,
   getContactsByIdController,
-  pathContactController,
+  patchContactController,
 } from '../controllers/contacts.js';
 import ctrlWrapper from '../utils/ctrlWrapper.js';
 import validateBody from '../utils/validateBody.js';
@@ -34,7 +34,7 @@ contactsRouter.patch(
   '/:contactId',
   isValidId,
   validateBody(contactsPatchSchema),
-  ctrlWrapper(pathContactController),
+  ctrlWrapper(patchContactController),
 );
 
 contactsRouter.delete(
@@ -42,4 +42,5 @@ contactsRouter.delete(
   isValidId,
   ctrlWrapper(deleteContactController),
 );
+
 export default contactsRouter;

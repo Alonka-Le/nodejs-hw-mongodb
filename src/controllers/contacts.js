@@ -44,7 +44,7 @@ export const addContactController = async (req, res) => {
   });
 };
 
-export const pathContactController = async (req, res) => {
+export const patchContactController = async (req, res) => {
   const { contactId } = req.params;
   const result = await contactServices.updateContact(
     { _id: contactId },
