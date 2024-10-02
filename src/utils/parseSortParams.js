@@ -1,4 +1,4 @@
-import { SORT_ORDER } from '../constants/sortOrder.js';
+import { SORT_ORDER } from '../constants/index.js';
 
 const parseSortParams = ({ sortBy, sortFields, sortOrder }) => {
   const parsedSortBy = sortFields.includes(sortBy) ? sortBy : '_id';
