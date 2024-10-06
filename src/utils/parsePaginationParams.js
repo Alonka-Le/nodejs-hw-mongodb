@@ -1,6 +1,6 @@
 const parseInteger = (value, defaultValue) => {
   if (typeof value !== 'string') return defaultValue;
-  const parsedValue = parseIn(value);
+  const parsedValue = parseInt(value);
   if (Number.isNaN(parsedValue)) return defaultValue;
   return parsedValue;
 };
