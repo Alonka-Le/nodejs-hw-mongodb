@@ -15,7 +15,9 @@ export const setupServer = () => {
   app.use(cors());
   app.use(express.json());
   app.use(cookieParser());
-
+  app.get('/', (req, res) => {
+    res.json({ message: 'API is running!' });
+  });
   app.use('/auth', authRouter);
   app.use('/contacts', contactsRouter);
 
