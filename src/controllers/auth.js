@@ -5,6 +5,7 @@ const setupSession = (res, session) => {
     httpOnly: true,
     expire: new Date(Date.now() + session.refreshTokenValidUntil),
   });
+
   res.cookie('sessionId', session._id, {
     httpOnly: true,
     expire: new Date(Date.now() + session.refreshTokenValidUntil),
@@ -39,20 +40,28 @@ export const loginController = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-export const refreshController = async (req, res) => {
-  const { refreshToken, sessionId } = req.cookies;
-  const session = await authServices.refreshSessinon({
-    refreshToken,
-    sessionId,
-  });
+export const refreshController = async (req, res, next) => {
+  try {
+    const { refreshToken, sessionId } = req.cookies;
+    const session = await authServices.refreshSession({
+      refreshToken,
+      sessionId,
+    });
 
-  setupSession(res, session);
+    if (!session) {
+      return next(createHttpError(401, 'Session not found'));
+    }
 
-  res.json({
-    status: 200,
-    message: 'Successfully refreshed a session!',
-    data: { accessToken: session.accessToken },
-  });
+    setupSession(res, session);
+
+    res.json({
+      status: 200,
+      message: 'Successfully refreshed a session!',
+      data: { accessToken: session.accessToken },
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const logoutController = async (req, res) => {
