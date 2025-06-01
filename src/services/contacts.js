@@ -35,11 +35,10 @@ export const getContacts = async ({
 export const getContact = (filter) => ContactCollection.findById(filter);
 export const createContact = (payload) => ContactCollection.create(payload);
 export const updateContact = async (filter, data, options = {}, userId) => {
-  console.log(filter, userId);
   const rawResult = await ContactCollection.findOneAndUpdate(
-    { _id: contactId },
-    data,
-    { new: true, includeResultMetadata: true },
+    { ...filter, userId },
+    { $set: data },
+    { new: true, returnDocument: 'after', ...options },
   );
   if (!rawResult || !rawResult.value) return null;
 

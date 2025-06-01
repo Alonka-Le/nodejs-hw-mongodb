@@ -5,7 +5,6 @@ const setupSession = (res, session) => {
     httpOnly: true,
     expire: new Date(Date.now() + session.refreshTokenValidUntil),
   });
-
   res.cookie('sessionId', session._id, {
     httpOnly: true,
     expire: new Date(Date.now() + session.refreshTokenValidUntil),
@@ -21,7 +20,7 @@ export const registerController = async (req, res) => {
       data: newUser,
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(409).json({ error: error.message });
   }
 };
 
