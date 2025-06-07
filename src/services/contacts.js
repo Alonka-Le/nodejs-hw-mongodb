@@ -32,14 +32,14 @@ export const getContacts = async ({
     ...paginationData,
   };
 };
-export const getContact = (filter) => ContactCollection.findById(filter);
+export const getContact = (filter) => ContactCollection.findOne(filter);
 export const createContact = (payload) => ContactCollection.create(payload);
-export const updateContact = async (filter, data, options = {}, userId) => {
-  const rawResult = await ContactCollection.findOneAndUpdate(
-    { ...filter, userId },
-    { $set: data },
-    { new: true, returnDocument: 'after', ...options },
-  );
+export const updateContact = async (filter, data, options = {}) => {
+  const rawResult = await ContactCollection.findOneAndUpdate(filter, data, {
+    includeResultMetadata: true,
+    ...options,
+  });
+
   if (!rawResult || !rawResult.value) return null;
 
   return {
@@ -47,5 +47,6 @@ export const updateContact = async (filter, data, options = {}, userId) => {
     isNew: Boolean(rawResult?.lastErrorObject?.upserted),
   };
 };
-export const deleteContact = (filter, userId) =>
-  ContactCollection.findOneAndDelete({ ...filter, userId });
+
+export const deleteContact = (filter) =>
+  ContactCollection.findOneAndDelete(filter);
