@@ -24,6 +24,17 @@ export const registerController = async (req, res) => {
   }
 };
 
+export const verifyController = async (req, res) => {
+  const { token } = req.query;
+  await authServices.verify(token);
+
+  res.json({
+    status: 200,
+    message: 'Email verified successfully',
+    data: {},
+  });
+};
+
 export const loginController = async (req, res) => {
   try {
     const session = await authServices.login(req.body);
@@ -74,4 +85,23 @@ export const logoutController = async (req, res) => {
   res.clearCookie('refreshToken');
 
   res.status(204).send();
+};
+
+export const requestResetEmailController = async (req, res) => {
+  await authServices.requestResetToken(req.body.email);
+
+  res.json({
+    status: 200,
+    message: 'Reset password email was successfully sent!',
+    data: {},
+  });
+};
+
+export const resetPasswordController = async (req, res) => {
+  await authServices.resetPassword(req.body);
+  res.json({
+    status: 200,
+    message: 'Password was successfully reset!',
+    data,
+  });
 };
