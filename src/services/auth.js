@@ -15,6 +15,7 @@ import { sendMail } from '../utils/sendMail.js';
 import path from 'node:path';
 import * as fs from 'node:fs/promises';
 import handlebars from 'handlebars';
+import mongoose from 'mongoose';
 const varifyEmailTamplatePath = path.join(
   TAMPLATES_DIR,
   'varify-templates.html',
@@ -78,7 +79,7 @@ export const verify = async (token) => {
   if (user.verify) {
     throw createHttpError(401, 'Email already verify');
   }
-  console.log('Decoded token data:', data);
+
   await UserCollection.findOneAndUpdate({ _id: user._id }, { verify: true });
 };
 
@@ -167,58 +168,24 @@ export const requestResetToken = async (email) => {
     );
   }
 };
-// export const resetPassword = async (password, token) => {
-//   let decoded;
-//   try {
-//     decoded = jwt.verify(token, env('JWT_SECRET'));
 
-//     const user = await UserCollection.findOne({
-//       _id: decoded.sub,
-//       email: decoded.email,
-//     });
-//     if (!user) {
-//       throw createHttpError(404, 'User not found');
-//     }
-
-//     const encryptedPassword = await bcrypt.hash(password, 10);
-
-//     await UserCollection.findOneAndUpdate(
-//       { _id: user.id },
-//       { password: encryptedPassword },
-//     );
-//   } catch (error) {
-//     // if (
-//     //   error.name === 'TokenExpiredError' ||
-//     //   error.name === 'JsonWebTokenError'
-//     // ) {
-//     //   throw createHttpError(401, 'Token is expired or invalid.');
-//     // }
-
-//     throw error;
-//   }
-// };
 export const resetPassword = async ({ token, password }) => {
   if (!token || !password) {
     throw createHttpError(400, 'Token and password are required');
   }
 
   const { data: payload, error } = verifyToken(token);
+
   if (error) {
     throw createHttpError(401, 'Invalid or expired token');
   }
 
-  console.log('Decoded token:', payload);
-
   const user = await UserCollection.findOne({
-    email: payload.email,
-    _id: payload.sub,
+    _id: new mongoose.Types.ObjectId(payload.sub),
   });
-
   if (!user) {
     throw createHttpError(404, 'User not found');
   }
-
-  console.log('User found:', user.email);
 
   const encryptedPassword = await bcrypt.hash(password, 10);
 
