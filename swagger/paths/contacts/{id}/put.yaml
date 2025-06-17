@@ -1,0 +1,70 @@
+tags:
+  - Contacts
+summary: Replace contact by id
+operationId: replaceContact
+description: Replace the contact with the specified ID. This operation will update all fields of the contact, and any missing fields will be removed or reset to default values.
+security:
+  - bearerAuth: []
+parameters:
+  - in: path
+    name: contactId
+    required: true
+    schema:
+      type: string
+      example: '65cart65o87f10c88b598395'
+requestBody:
+  content:
+    multipart/form-data:
+      schema:
+        type: object
+        properties:
+          name:
+            description: "Contact's name"
+            type: string
+            example: 'Andrei Dumka'
+          phoneNumber:
+            description: "Contact's phone number"
+            type: string
+            example: '++38091231230'
+          email:
+            description: "Contact's email"
+            type: string
+            example: 'andrei23415@mail.com'
+          isFavourite:
+            description: 'Is favorite contact'
+            type: boolean
+            example: true
+          contactType:
+            description: 'What type of contact does it belong to'
+            type: string
+            enum: [work, home, personal]
+            example: 'home'
+          photo:
+            description: "Contact's photo"
+            type: string
+            example: 'https://res.cloudinary.com/dvgcgldeo/image/upload/v1749834846/photos/cykj7q14gasiokqcxqsv.jpg'
+responses:
+  '200':
+    description: Successfully contact replaced
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully contact replaced with id 65ca67e7ae7f10c88b598384!
+            data:
+              type: object
+              $ref: '../../../components/schemas/contacts.yaml'
+  '404':
+    $ref: '../../../components/responses/404contactsId.yaml'
+  '401':
+    $ref: '../../../components/responses/401.yaml'

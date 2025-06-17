@@ -8,7 +8,6 @@ import {
 } from '../constants/users.js';
 import { createJwtToken, verifyToken } from '../utils/jwt.js';
 import SessionCollection from '../db/models/Session.js';
-import jwt from 'jsonwebtoken';
 import { env } from '../utils/env.js';
 import { SMTP, TAMPLATES_DIR } from '../constants/index.js';
 import { sendMail } from '../utils/sendMail.js';
@@ -16,6 +15,7 @@ import path from 'node:path';
 import * as fs from 'node:fs/promises';
 import handlebars from 'handlebars';
 import mongoose from 'mongoose';
+import { validateCode } from '../utils/googleOAuthUrl.js';
 const varifyEmailTamplatePath = path.join(
   TAMPLATES_DIR,
   'varify-templates.html',
@@ -105,6 +105,33 @@ export const login = async (payload) => {
   const userSession = await SessionCollection.create({
     userId: user._id,
     ...createData,
+  });
+
+  return userSession;
+};
+
+export const signinOrSignupWithGoogleOAuth = async (code) => {
+  const loginTicket = await validateCode(code);
+  const payload = loginTicket.getPayload();
+
+  let user = await UserCollection.findOne({ email: payload.email });
+  if (!user) {
+    const password = randomBytes(10);
+    const hashPassword = await bcrypt.hash(password, 10);
+    user = await UserCollection.create({
+      email: payload.email,
+      name: payload.name,
+      password: hashPassword,
+      verify: true,
+    });
+    delete user._doc.password;
+  }
+
+  const sessionData = createSession();
+
+  const userSession = await SessionCollection.create({
+    userId: user._id,
+    ...sessionData,
   });
 
   return userSession;
