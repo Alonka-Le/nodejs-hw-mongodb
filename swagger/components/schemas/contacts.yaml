@@ -17,10 +17,11 @@ properties:
   phoneNumber:
     description: "Contact's phone number"
     type: string
-    example: '++38091231230'
+    example: '+38091231230'
   email:
     description: "Contact's email"
     type: string
+    format: email
     example: 'andrei23415@mail.com'
   isFavourite:
     description: 'Is favorite contact'
@@ -34,6 +35,7 @@ properties:
   userId:
     description: "Contact's user id"
     type: string
+    format: uuid
     example: '683c67dfcff3a8e31ad7a061'
   photo:
     description: "Contact's photo"

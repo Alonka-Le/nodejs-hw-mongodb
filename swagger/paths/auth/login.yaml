@@ -3,8 +3,7 @@ tags:
 summary: Log in a user
 operationId: loginUser
 description: Authenticate a user using email and password, returning an access token.
-security:
-  - bearerAuth: []
+security: []
 requestBody:
   description: User login credentials.
   required: true

@@ -2,12 +2,12 @@
   "openapi": "3.1.0",
   "info": {
     "version": "1.0.0",
-    "title": "<Contacts app>",
+    "title": "Contacts App",
     "license": {
       "name": "Apache 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "description": "My contacts app"
+    "description": "A RESTful API for managing contacts, including authentication and user management."
   },
   "servers": [
     {
@@ -29,9 +29,9 @@
         "tags": [
           "Contacts"
         ],
-        "summary": "Get list of all contacts",
+        "summary": "Get list of contacts",
         "operationId": "getContacts",
-        "description": "Retrieve a list of users using this endpoint",
+        "description": "Retrieve a list of contacts using this endpoint.",
         "security": [
           {
             "bearerAuth": []
@@ -61,7 +61,7 @@
               "type": "string",
               "example": "name"
             },
-            "description": "All contacts fields can be mentioned. Default value - _id"
+            "description": "All contact fields can be mentioned. Default value - _id"
           },
           {
             "in": "query",
@@ -93,14 +93,10 @@
             "in": "query",
             "name": "isFavourite",
             "schema": {
-              "type": "string",
-              "enum": [
-                "true",
-                "false"
-              ]
+              "type": "boolean"
             },
             "description": "Filter contacts by favourite status",
-            "example": "false"
+            "example": false
           }
         ],
         "responses": {
@@ -122,7 +118,7 @@
                     },
                     "message": {
                       "type": "string",
-                      "example": "Successfully find contacts!"
+                      "example": "Successfully found contacts!"
                     },
                     "data": {
                       "type": "object",
@@ -143,19 +139,19 @@
                           }
                         },
                         "page": {
-                          "type": "number",
+                          "type": "integer",
                           "example": 2
                         },
                         "perPage": {
-                          "type": "number",
+                          "type": "integer",
                           "example": 5
                         },
                         "totalItems": {
-                          "type": "number",
+                          "type": "integer",
                           "example": 20
                         },
                         "totalPages": {
-                          "type": "number",
+                          "type": "integer",
                           "example": 4
                         },
                         "hasNextPage": {
@@ -193,7 +189,7 @@
                     },
                     "message": {
                       "type": "string",
-                      "example": "Bad request"
+                      "example": "Internal server error"
                     }
                   }
                 }
@@ -321,7 +317,7 @@
         ],
         "summary": "Get contact by id",
         "operationId": "getContact",
-        "description": "Get contact by id",
+        "description": "Retrieves contact details by the specified contact ID.",
         "security": [
           {
             "bearerAuth": []
@@ -334,13 +330,13 @@
             "required": true,
             "schema": {
               "type": "string",
-              "example": "65cart65o87f10c88b598384"
+              "example": "65caf65a087f10c88b598384"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Get contact by id",
+            "description": "Successfully found contact by id",
             "content": {
               "application/json": {
                 "schema": {
@@ -357,10 +353,9 @@
                     },
                     "message": {
                       "type": "string",
-                      "example": "Successfully found contact with id 65cart65o87f10c88b598384!"
+                      "example": "Successfully found contact with id 65caf65a087f10c88b598384!"
                     },
                     "data": {
-                      "type": "object",
                       "$ref": "#/components/schemas/contacts"
                     }
                   }
@@ -382,7 +377,7 @@
         ],
         "summary": "Replace contact by id",
         "operationId": "replaceContact",
-        "description": "Replace the contact with the specified ID. This operation will update all fields of the contact, and any missing fields will be removed or reset to default values.",
+        "description": "Replace the contact with the specified ID. This operation updates all fields and removes/reset missing ones.",
         "security": [
           {
             "bearerAuth": []
@@ -395,49 +390,50 @@
             "required": true,
             "schema": {
               "type": "string",
-              "example": "65cart65o87f10c88b598395"
+              "example": "65caf65a087f10c88b598395"
             }
           }
         ],
         "requestBody": {
           "content": {
-            "multipart/form-data": {
+            "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
                   "name": {
-                    "description": "Contact's name",
                     "type": "string",
+                    "description": "Contact's name",
                     "example": "Andrei Dumka"
                   },
                   "phoneNumber": {
-                    "description": "Contact's phone number",
                     "type": "string",
-                    "example": "++38091231230"
+                    "description": "Contact's phone number",
+                    "example": "+38091231230"
                   },
                   "email": {
-                    "description": "Contact's email",
                     "type": "string",
+                    "format": "email",
+                    "description": "Contact's email",
                     "example": "andrei23415@mail.com"
                   },
                   "isFavourite": {
-                    "description": "Is favorite contact",
                     "type": "boolean",
+                    "description": "Is favorite contact",
                     "example": true
                   },
                   "contactType": {
-                    "description": "What type of contact does it belong to",
                     "type": "string",
                     "enum": [
                       "work",
                       "home",
                       "personal"
                     ],
+                    "description": "What type of contact does it belong to",
                     "example": "home"
                   },
                   "photo": {
-                    "description": "Contact's photo",
                     "type": "string",
+                    "description": "Contact's photo URL",
                     "example": "https://res.cloudinary.com/dvgcgldeo/image/upload/v1749834846/photos/cykj7q14gasiokqcxqsv.jpg"
                   }
                 }
@@ -447,7 +443,7 @@
         },
         "responses": {
           "200": {
-            "description": "Successfully contact replaced",
+            "description": "Contact successfully replaced.",
             "content": {
               "application/json": {
                 "schema": {
@@ -464,10 +460,9 @@
                     },
                     "message": {
                       "type": "string",
-                      "example": "Successfully contact replaced with id 65ca67e7ae7f10c88b598384!"
+                      "example": "Contact successfully replaced with id 65caf65a087f10c88b598395!"
                     },
                     "data": {
-                      "type": "object",
                       "$ref": "#/components/schemas/contacts"
                     }
                   }
@@ -489,7 +484,7 @@
         ],
         "summary": "Update contact by id",
         "operationId": "updateContact",
-        "description": "Update the contact with the specified ID",
+        "description": "Update the contact with the specified ID.",
         "security": [
           {
             "bearerAuth": []
@@ -502,13 +497,13 @@
             "required": true,
             "schema": {
               "type": "string",
-              "example": "65cart65o87f10c88b598395"
+              "example": "65caf65a087f10c88b598395"
             }
           }
         ],
         "requestBody": {
           "content": {
-            "multipart/form-data": {
+            "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
@@ -533,18 +528,18 @@
                     "example": true
                   },
                   "contactType": {
-                    "description": "What type of contact does it belong to",
+                    "type": "string",
                     "enum": [
                       "work",
                       "home",
                       "personal"
                     ],
-                    "type": "string",
+                    "description": "What type of contact does it belong to",
                     "example": "home"
                   },
                   "photo": {
-                    "description": "Contact's photo",
                     "type": "string",
+                    "description": "Contact's photo URL",
                     "example": "https://res.cloudinary.com/dvgcgldeo/image/upload/v1749834846/photos/cykj7q14gasiokqcxqsv.jpg"
                   }
                 }
@@ -554,7 +549,7 @@
         },
         "responses": {
           "200": {
-            "description": "Successfully contact updated",
+            "description": "Contact successfully updated.",
             "content": {
               "application/json": {
                 "schema": {
@@ -571,10 +566,9 @@
                     },
                     "message": {
                       "type": "string",
-                      "example": "Successfully contact updated with id 65ca67e7ae7f10c88b598384!"
+                      "example": "Contact successfully updated with id 65caf65a087f10c88b598384!"
                     },
                     "data": {
-                      "type": "object",
                       "$ref": "#/components/schemas/contacts"
                     }
                   }
@@ -596,7 +590,7 @@
         ],
         "summary": "Delete contact by id",
         "operationId": "deleteContact",
-        "description": "Delete the contact with id",
+        "description": "Delete the contact with the specified ID.",
         "security": [
           {
             "bearerAuth": []
@@ -615,30 +609,7 @@
         ],
         "responses": {
           "204": {
-            "description": "Successfully deleted contact",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 204,
-                      "description": "The HTTP status code indicating successful deletion with no content."
-                    },
-                    "message": {
-                      "type": "string",
-                      "example": "Contact successfully deleted.",
-                      "description": "A message confirming that the contact was successfully deleted."
-                    }
-                  },
-                  "required": [
-                    "status",
-                    "message"
-                  ]
-                }
-              }
-            }
+            "description": "Successfully deleted contact — no content returned"
           },
           "401": {
             "$ref": "#/components/responses/401"
@@ -660,11 +631,7 @@
         "summary": "Register a new user",
         "operationId": "registerUser",
         "description": "Creates a new user account with a unique email and password.",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+        "security": [],
         "requestBody": {
           "description": "User registration details.",
           "required": true,
@@ -715,33 +682,13 @@
                   "properties": {
                     "status": {
                       "type": "integer",
-                      "example": 201,
-                      "description": "HTTP status code indicating successful registration."
+                      "example": 201
                     },
                     "message": {
                       "type": "string",
-                      "example": "User registered successfully",
-                      "description": "Confirmation message of successful registration."
+                      "example": "User registered successfully"
                     },
                     "data": {
-                      "type": "object",
-                      "required": [
-                        "name",
-                        "email"
-                      ]
-                    },
-                    "properties": {
-                      "name": {
-                        "type": "string",
-                        "example": "Nik Orest",
-                        "description": "The registered user's name."
-                      },
-                      "email": {
-                        "type": "string",
-                        "example": "nikorest@mail.com",
-                        "description": "The registered user's email address.",
-                        "profile": null
-                      },
                       "$ref": "#/components/schemas/user"
                     }
                   }
@@ -996,11 +943,7 @@
         "summary": "Log in a user",
         "operationId": "loginUser",
         "description": "Authenticate a user using email and password, returning an access token.",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+        "security": [],
         "requestBody": {
           "description": "User login credentials.",
           "required": true,
@@ -1531,13 +1474,13 @@
     }
   },
   "components": {
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
-      }
-    },
     "schemas": {
+      "Contact": {
+        "$ref": "#/components/schemas/contacts"
+      },
+      "User": {
+        "$ref": "#/components/schemas/user"
+      },
       "contacts": {
         "type": "object",
         "required": [
@@ -1561,11 +1504,12 @@
           "phoneNumber": {
             "description": "Contact's phone number",
             "type": "string",
-            "example": "++38091231230"
+            "example": "+38091231230"
           },
           "email": {
             "description": "Contact's email",
             "type": "string",
+            "format": "email",
             "example": "andrei23415@mail.com"
           },
           "isFavourite": {
@@ -1586,6 +1530,7 @@
           "userId": {
             "description": "Contact's user id",
             "type": "string",
+            "format": "uuid",
             "example": "683c67dfcff3a8e31ad7a061"
           },
           "photo": {
@@ -1599,13 +1544,13 @@
         "type": "object",
         "required": [
           "name",
-          "email",
-          "password"
+          "email"
         ],
         "properties": {
           "_id": {
-            "description": "User's id",
+            "description": "User's unique id",
             "type": "string",
+            "format": "uuid",
             "example": "6850639033bb206909fcc5ce"
           },
           "name": {
@@ -1616,12 +1561,8 @@
           "email": {
             "description": "User's email",
             "type": "string",
+            "format": "email",
             "example": "anna21841@mail.com"
-          },
-          "password": {
-            "description": "User's password",
-            "type": "string",
-            "example": "123pwqw123"
           },
           "createdAt": {
             "description": "Timestamp when the user was created",
@@ -1636,6 +1577,12 @@
             "example": "2023-12-01T22:00:10Z"
           }
         }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
       }
     },
     "responses": {

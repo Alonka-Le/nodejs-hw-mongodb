@@ -3,9 +3,7 @@ tags:
 summary: Register a new user
 operationId: registerUser
 description: Creates a new user account with a unique email and password.
-security:
-  - bearerAuth: []
-
+security: []
 requestBody:
   description: User registration details.
   required: true
@@ -47,26 +45,10 @@ responses:
             status:
               type: integer
               example: 201
-              description: HTTP status code indicating successful registration.
             message:
               type: string
               example: 'User registered successfully'
-              description: Confirmation message of successful registration.
             data:
-              type: object
-              required:
-                - name
-                - email
-            properties:
-              name:
-                type: string
-                example: 'Nik Orest'
-                description: The registered user's name.
-              email:
-                type: string
-                example: 'nikorest@mail.com'
-                description: The registered user's email address.
-                profile:
               $ref: '../../components/schemas/user.yaml'
   '400':
     $ref: '../../components/responses/400.yaml'

@@ -1,11 +1,11 @@
 openapi: 3.1.0
 info:
   version: 1.0.0
-  title: <Contacts app>
+  title: Contacts App
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
-  description: My contacts app
+  description: 'A RESTful API for managing contacts, including authentication and user management.'
 tags:
   - name: Contacts
     description: Operations about contacts.
@@ -52,6 +52,11 @@ paths:
     post:
       $ref: '../swagger/paths/auth/reset-pwd.yaml'
 components:
+  schemas:
+    Contact:
+      $ref: ../swagger/components/schemas/contacts.yaml
+    User:
+      $ref: '../swagger/components/schemas/user.yaml'
   securitySchemes:
     bearerAuth:
       type: http

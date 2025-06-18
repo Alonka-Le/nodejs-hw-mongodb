@@ -2,7 +2,7 @@ tags:
   - Contacts
 summary: Update contact by id
 operationId: updateContact
-description: Update the contact with the specified ID
+description: Update the contact with the specified ID.
 security:
   - bearerAuth: []
 parameters:
@@ -11,10 +11,10 @@ parameters:
     required: true
     schema:
       type: string
-      example: '65cart65o87f10c88b598395'
+      example: '65caf65a087f10c88b598395'
 requestBody:
   content:
-    multipart/form-data:
+    application/json:
       schema:
         type: object
         properties:
@@ -35,17 +35,17 @@ requestBody:
             description: 'Is favorite contact'
             example: true
           contactType:
-            description: 'What type of contact does it belong to'
-            enum: [work, home, personal]
             type: string
+            enum: [work, home, personal]
+            description: 'What type of contact does it belong to'
             example: 'home'
           photo:
-            description: "Contact's photo"
             type: string
+            description: "Contact's photo URL"
             example: 'https://res.cloudinary.com/dvgcgldeo/image/upload/v1749834846/photos/cykj7q14gasiokqcxqsv.jpg'
 responses:
   '200':
-    description: Successfully contact updated
+    description: Contact successfully updated.
     content:
       application/json:
         schema:
@@ -60,11 +60,12 @@ responses:
               example: 200
             message:
               type: string
-              example: Successfully contact updated with id 65ca67e7ae7f10c88b598384!
+              example: 'Contact successfully updated with id 65caf65a087f10c88b598384!'
             data:
-              type: object
               $ref: '../../../components/schemas/contacts.yaml'
+
   '404':
     $ref: '../../../components/responses/404contactsId.yaml'
+
   '401':
     $ref: '../../../components/responses/401.yaml'
