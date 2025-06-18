@@ -1,0 +1,17 @@
+description: Bad request, missing or invalid parameters.
+content:
+  application/json:
+    schema:
+      type: object
+      required:
+        - status
+        - message
+      properties:
+        status:
+          type: integer
+          example: 400
+          description: HTTP status code indicating a bad request.
+        message:
+          type: string
+          example: 'Invalid email or password format'
+          description: Detailed error message.

@@ -1,0 +1,99 @@
+tags:
+  - Auth
+summary: Confirm Google authentication
+operationId: confirmGoogle
+description: Validates the Google OAuth token and retrieves user information.
+security:
+  - bearerAuth: []
+requestBody:
+  description: Google authentication token.
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - googleToken
+        properties:
+          googleToken:
+            type: string
+            example: 'ya29.a0ARrdaM-EXAMPLE-TOKEN-12345'
+            description: A valid Google OAuth token
+responses:
+  '200':
+    description: Successfully confirmed Google authentication.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+              description: HTTP status code indicating successful confirmation.
+            message:
+              type: string
+              example: 'Google authentication confirmed successfully'
+              description: Confirmation message for successful authentication.
+            data:
+              type: object
+              required:
+                - userId
+                - email
+                - name
+              properties:
+                userId:
+                  type: string
+                  example: '62f8f3b0c7d438001c0e'
+                  description: Unique identifier of the authenticated user.
+                email:
+                  type: string
+                  example: 'user@example.com'
+                  description: Email address of the authenticated user.
+                name:
+                  type: string
+                  example: 'John Doe'
+                  description: Full name of the authenticated user.
+  '400':
+    description: Bad request, invalid or missing Google token.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 400
+              description: HTTP status code indicating an invalid request.
+            message:
+              type: string
+              example: 'Invalid Google token format'
+              description: Detailed error message.
+  '401':
+    description: Unauthorized access, invalid or expired Google token.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 401
+              description: HTTP status code indicating unauthorized access.
+            message:
+              type: string
+              example: 'Google token expired or invalid'
+              description: Description of the error.
+  '500':
+    description: Internal server error.
+    $ref: '../../components/responses/500.yaml'

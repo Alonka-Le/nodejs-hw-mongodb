@@ -1,0 +1,32 @@
+tags:
+  - Auth
+summary: Log out a user
+operationId: logoutUser
+description: Ends the user session and clears authentication data.
+security:
+  - bearerAuth: []
+responses:
+  '204':
+    description: Successfully logged out. No content returned.
+  '401':
+    description: Unauthorized access, session not found or invalid token.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 401
+              description: HTTP status code indicating unauthorized access.
+            message:
+              type: string
+              example: 'Session not found or token expired'
+              description: Error message indicating that the session could not be found.
+
+  '500':
+    description: Internal server error.
+    $ref: '../../components/responses/500.yaml'

@@ -11,3 +11,7 @@ export const logInUserShema = Joi.object({
   email: Joi.string().pattern(emailRegexp).required(),
   password: Joi.string().required(),
 });
+
+export const userLoginWithGoogleOAuthSchema = Joi.object({
+  code: Joi.string().required(),
+});

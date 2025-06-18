@@ -1,0 +1,75 @@
+tags:
+  - Auth
+summary: Register a new user
+operationId: registerUser
+description: Creates a new user account with a unique email and password.
+security: []
+requestBody:
+  description: User registration details.
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - name
+          - email
+          - password
+        properties:
+          name:
+            type: string
+            example: 'Nik Orest'
+            description: The full name of the user.
+          email:
+            type: string
+            format: email
+            example: 'nikorest@mail.com'
+            description: The email address of the user.
+          password:
+            type: string
+            format: password
+            example: 'Nikorest123!'
+            description: A secure password for the user account.
+responses:
+  '201':
+    description: Successfully registered a new user.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 201
+            message:
+              type: string
+              example: 'User registered successfully'
+            data:
+              $ref: '../../components/schemas/user.yaml'
+  '400':
+    $ref: '../../components/responses/400.yaml'
+  '409':
+    description: Conflict error, email already in use.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 409
+              description: HTTP status code indicating a conflict.
+            message:
+              type: string
+              example: 'Email already in use'
+              description: Conflict error message
+  '500':
+    description: Internal server error.
+    $ref: '../../components/responses/500.yaml'

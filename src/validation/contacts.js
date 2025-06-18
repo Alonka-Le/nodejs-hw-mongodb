@@ -18,6 +18,7 @@ export const contactsPatchSchema = Joi.object({
   phoneNumber: Joi.string().min(3).max(20),
   email: Joi.string().min(3).max(20).email(),
   isFavourite: Joi.boolean(),
+  photo: Joi.string(),
   contactType: Joi.string()
     .min(3)
     .max(20)

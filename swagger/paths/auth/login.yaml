@@ -1,0 +1,78 @@
+tags:
+  - Auth
+summary: Log in a user
+operationId: loginUser
+description: Authenticate a user using email and password, returning an access token.
+security: []
+requestBody:
+  description: User login credentials.
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - email
+          - password
+        properties:
+          email:
+            type: string
+            format: email
+            example: 'nikorest@example.com'
+            description: The email address of the user.
+          password:
+            type: string
+            format: password
+            example: 'Nikorest123123!'
+            description: The password for the user account.
+responses:
+  '200':
+    description: Successfully authenticated the user.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+              description: HTTP status code indicating successful login.
+            message:
+              type: string
+              example: 'Successfully logged in'
+              description: Confirmation message of successful login.
+            data:
+              type: object
+              required:
+                - accessToken
+              properties:
+                accessToken:
+                  type: string
+                  example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+
+  '401':
+    description: Unauthorized access due to incorrect email or password.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 401
+              description: HTTP status code indicating unauthorized access.
+            message:
+              type: string
+              example: 'Email or password invalid'
+              description: Unauthorized error message.
+  '404':
+    $ref: '../../components/responses/404auth.yaml'
+  '500':
+    $ref: '../../components/responses/500.yaml'

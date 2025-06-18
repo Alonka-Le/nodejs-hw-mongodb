@@ -1,0 +1,89 @@
+tags:
+  - Auth
+summary: Refresh access token
+operationId: refreshToken
+description: Generates a new access token using a valid refresh token.
+security:
+  - bearerAuth: []
+requestBody:
+  description: Refresh token used to generate a new access token.
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - refreshToken
+        properties:
+          refreshToken:
+            type: string
+            example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.xedzdWIiOiPnwsh0NTY3ODkwIiwibmFtZSI6IkpNSOugRG9lIiwiaALDUjoxNTE2MjM5MDIyfQ.FSFvvKQ66B8w87W5Y1Pfe0xgX1MP8'
+            description: A valid refresh token issued during authentication.
+responses:
+  '200':
+    description: Successfully generated a new access token.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+              description: HTTP status code indicating successful token refresh.
+            message:
+              type: string
+              example: 'Access token refreshed successfully'
+              description: Confirmation message of successful token refresh.
+            data:
+              type: object
+              required:
+                - accessToken
+              properties:
+                accessToken:
+                  type: string
+                  example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+                  description: New JWT access token for authenticated requests.
+  '400':
+    description: Invalid or missing refresh token.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 400
+              description: HTTP status code indicating a bad request.
+            message:
+              type: string
+              example: 'Invalid refresh token'
+              description: Description of the error.
+  '401':
+    description: Unauthorized access, invalid or expired refresh token.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 401
+              description: HTTP status code indicating unauthorized access.
+            message:
+              type: string
+              example: 'Refresh token expired or invalid'
+              description: Error message indicating token issue.
+  '500':
+    description: Internal server error.
+    $ref: '../../components/responses/500.yaml'

@@ -1,4 +1,5 @@
 import * as authServices from '../services/auth.js';
+import { generateGoogleOAuthUrl } from '../utils/googleOAuthUrl.js';
 
 const setupSession = (res, session) => {
   res.cookie('refreshToken', session.refreshToken, {
@@ -22,6 +23,17 @@ export const registerController = async (req, res) => {
   } catch (error) {
     res.status(409).json({ error: error.message });
   }
+};
+
+export const verifyController = async (req, res) => {
+  const { token } = req.query;
+  await authServices.verify(token);
+
+  res.json({
+    status: 200,
+    message: 'Email verified successfully',
+    data: {},
+  });
 };
 
 export const loginController = async (req, res) => {
@@ -74,4 +86,50 @@ export const logoutController = async (req, res) => {
   res.clearCookie('refreshToken');
 
   res.status(204).send();
+};
+
+export const requestResetEmailController = async (req, res) => {
+  await authServices.requestResetToken(req.body.email);
+
+  res.json({
+    status: 200,
+    message: 'Reset password email was successfully sent!',
+    data: {},
+  });
+};
+
+export const resetPasswordController = async (req, res) => {
+  const data = await authServices.resetPassword(req.body);
+  res.json({
+    status: 200,
+    message: 'Password has been successfully reset.',
+    data,
+  });
+};
+
+export const getGoogleOauthUrlController = async (req, res) => {
+  const url = generateGoogleOAuthUrl();
+
+  res.json({
+    status: 200,
+    message: 'Successfully created Google Oauth url.',
+    data: {
+      url,
+    },
+  });
+};
+
+export const loginWithGoogleOAuthController = async (req, res) => {
+  const session = await authServices.signinOrSignupWithGoogleOAuth(
+    req.body.code,
+  );
+  setupSession(res, session);
+
+  res.json({
+    status: 200,
+    message: 'Successfully login by  Google OAuth ',
+    data: {
+      accessToken: session.accessToken,
+    },
+  });
 };

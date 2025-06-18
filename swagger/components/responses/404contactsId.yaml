@@ -1,0 +1,27 @@
+description: Contact not found
+content:
+  application/json:
+    schema:
+      type: object
+      required:
+        - status
+        - message
+        - data
+      properties:
+        status:
+          type: integer
+          example: 404
+          description: HTTP status code indicating that the contact was not found.
+        message:
+          type: string
+          example: 'Contact with contactId not found'
+          description: Contact with contactId not found
+        data:
+          type: object
+          required:
+            - message
+          properties:
+            message:
+              type: string
+              example: 'Contact with contactId not found'
+              description: Contact with contactId not found
