@@ -1,0 +1,79 @@
+tags:
+  - Auth
+summary: Send password reset email
+operationId: sendResetEmail
+description: Sends a password reset email to the user if the email exists in the system.
+security: []
+requestBody:
+  description: Email of the user requesting a password reset.
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - email
+        properties:
+          email:
+            type: string
+            format: email
+            example: 'nokorest123@mail.com'
+            description: The email address of the user requesting a password reset.
+responses:
+  '200':
+    description: Password reset email sent successfully.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 200
+              description: HTTP status code indicating the email was sent.
+            message:
+              type: string
+              example: 'Password reset instructions have been sent to your email'
+              description: Confirmation message of email dispatch.
+  '400':
+    description: Invalid or missing email format.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 400
+              description: HTTP status code indicating an invalid request.
+            message:
+              type: string
+              example: 'Invalid email format'
+              description: Detailed error message.
+  '404':
+    description: Email not found in the system.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 404
+              description: HTTP status code indicating that the email is not associated with a user account.
+            message:
+              type: string
+              example: 'Email not found'
+              description: Error message for a non-existing email.
+  '500':
+    description: Internal server error.
+    $ref: '../../components/responses/500.yaml'

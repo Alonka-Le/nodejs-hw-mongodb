@@ -1,0 +1,38 @@
+tags:
+  - Auth
+summary: Get OAuth authentication URL
+operationId: getOAuthUrl
+description: Provides a URL for initiating authentication with an OAuth provider.
+security: []
+responses:
+  '200':
+    description: Successfully retrieved the OAuth URL.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+            - data
+          properties:
+            status:
+              type: integer
+              example: 200
+              description: HTTP status code indicating a successful request.
+            message:
+              type: string
+              example: 'OAuth URL retrieved successfully'
+              description: Confirmation message for successful URL retrieval.
+            data:
+              type: object
+              required:
+                - oauthUrl
+              properties:
+                oauthUrl:
+                  type: string
+                  example: 'https://accounts.google.com/o/oauth2/auth?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=email profile'
+                  description: The OAuth authentication URL.
+  '500':
+    description: Internal server error.
+    $ref: '../../components/responses/500.yaml'

@@ -59,11 +59,11 @@ responses:
             status:
               type: integer
               example: 201
-              description: HTTP status code indicating successful creation.
+              description: Successfully created a contact!
             message:
               type: string
               example: Successfully created a contact!
-              description: Confirmation message of successful contact creation.
+              description: Successfully created a contact!
             data:
               type: object
               $ref: '../../components/schemas/contacts.yaml'

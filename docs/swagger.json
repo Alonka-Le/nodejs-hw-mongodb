@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "version": "1.0.0",
-    "title": "<назва вашого додатку>",
+    "title": "<Contacts app>",
     "license": {
       "name": "Apache 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
@@ -21,10 +21,6 @@
     {
       "name": "Contacts",
       "description": "Operations about contacts."
-    },
-    {
-      "name": "Auth",
-      "description": "Auth operations."
     }
   ],
   "paths": {
@@ -290,12 +286,12 @@
                     "status": {
                       "type": "integer",
                       "example": 201,
-                      "description": "HTTP status code indicating successful creation."
+                      "description": "Successfully created a contact!"
                     },
                     "message": {
                       "type": "string",
                       "example": "Successfully created a contact!",
-                      "description": "Confirmation message of successful contact creation."
+                      "description": "Successfully created a contact!"
                     },
                     "data": {
                       "type": "object",
@@ -655,6 +651,883 @@
           }
         }
       }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Register a new user",
+        "operationId": "registerUser",
+        "description": "Creates a new user account with a unique email and password.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "User registration details.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Nik Orest",
+                    "description": "The full name of the user."
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "nikorest@mail.com",
+                    "description": "The email address of the user."
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "Nikorest123!",
+                    "description": "A secure password for the user account."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successfully registered a new user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 201,
+                      "description": "HTTP status code indicating successful registration."
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "User registered successfully",
+                      "description": "Confirmation message of successful registration."
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "name",
+                        "email"
+                      ]
+                    },
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "example": "Nik Orest",
+                        "description": "The registered user's name."
+                      },
+                      "email": {
+                        "type": "string",
+                        "example": "nikorest@mail.com",
+                        "description": "The registered user's email address.",
+                        "profile": null
+                      },
+                      "$ref": "#/components/schemas/user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "409": {
+            "description": "Conflict error, email already in use.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 409,
+                      "description": "HTTP status code indicating a conflict."
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Email already in use",
+                      "description": "Conflict error message"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/get-oauth-url": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Get OAuth authentication URL",
+        "operationId": "getOAuthUrl",
+        "description": "Provides a URL for initiating authentication with an OAuth provider.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved the OAuth URL.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200,
+                      "description": "HTTP status code indicating a successful request."
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "OAuth URL retrieved successfully",
+                      "description": "Confirmation message for successful URL retrieval."
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "oauthUrl"
+                      ],
+                      "properties": {
+                        "oauthUrl": {
+                          "type": "string",
+                          "example": "https://accounts.google.com/o/oauth2/auth?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=email profile",
+                          "description": "The OAuth authentication URL."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/confirm-google": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Confirm Google authentication",
+        "operationId": "confirmGoogle",
+        "description": "Validates the Google OAuth token and retrieves user information.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Google authentication token.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "googleToken"
+                ],
+                "properties": {
+                  "googleToken": {
+                    "type": "string",
+                    "example": "ya29.a0ARrdaM-EXAMPLE-TOKEN-12345",
+                    "description": "A valid Google OAuth token"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully confirmed Google authentication.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200,
+                      "description": "HTTP status code indicating successful confirmation."
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Google authentication confirmed successfully",
+                      "description": "Confirmation message for successful authentication."
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "userId",
+                        "email",
+                        "name"
+                      ],
+                      "properties": {
+                        "userId": {
+                          "type": "string",
+                          "example": "62f8f3b0c7d438001c0e",
+                          "description": "Unique identifier of the authenticated user."
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "user@example.com",
+                          "description": "Email address of the authenticated user."
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "John Doe",
+                          "description": "Full name of the authenticated user."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request, invalid or missing Google token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 400,
+                      "description": "HTTP status code indicating an invalid request."
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid Google token format",
+                      "description": "Detailed error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access, invalid or expired Google token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 401,
+                      "description": "HTTP status code indicating unauthorized access."
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Google token expired or invalid",
+                      "description": "Description of the error."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Log in a user",
+        "operationId": "loginUser",
+        "description": "Authenticate a user using email and password, returning an access token.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "User login credentials.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "nikorest@example.com",
+                    "description": "The email address of the user."
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "Nikorest123123!",
+                    "description": "The password for the user account."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully authenticated the user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200,
+                      "description": "HTTP status code indicating successful login."
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Successfully logged in",
+                      "description": "Confirmation message of successful login."
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "accessToken"
+                      ],
+                      "properties": {
+                        "accessToken": {
+                          "type": "string",
+                          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access due to incorrect email or password.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 401,
+                      "description": "HTTP status code indicating unauthorized access."
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Email or password invalid",
+                      "description": "Unauthorized error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/404auth"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Refresh access token",
+        "operationId": "refreshToken",
+        "description": "Generates a new access token using a valid refresh token.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Refresh token used to generate a new access token.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "refreshToken"
+                ],
+                "properties": {
+                  "refreshToken": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.xedzdWIiOiPnwsh0NTY3ODkwIiwibmFtZSI6IkpNSOugRG9lIiwiaALDUjoxNTE2MjM5MDIyfQ.FSFvvKQ66B8w87W5Y1Pfe0xgX1MP8",
+                    "description": "A valid refresh token issued during authentication."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully generated a new access token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200,
+                      "description": "HTTP status code indicating successful token refresh."
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Access token refreshed successfully",
+                      "description": "Confirmation message of successful token refresh."
+                    },
+                    "data": {
+                      "type": "object",
+                      "required": [
+                        "accessToken"
+                      ],
+                      "properties": {
+                        "accessToken": {
+                          "type": "string",
+                          "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+                          "description": "New JWT access token for authenticated requests."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing refresh token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 400,
+                      "description": "HTTP status code indicating a bad request."
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid refresh token",
+                      "description": "Description of the error."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access, invalid or expired refresh token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 401,
+                      "description": "HTTP status code indicating unauthorized access."
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Refresh token expired or invalid",
+                      "description": "Error message indicating token issue."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Log out a user",
+        "operationId": "logoutUser",
+        "description": "Ends the user session and clears authentication data.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successfully logged out. No content returned."
+          },
+          "401": {
+            "description": "Unauthorized access, session not found or invalid token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 401,
+                      "description": "HTTP status code indicating unauthorized access."
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Session not found or token expired",
+                      "description": "Error message indicating that the session could not be found."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/send-reset-email": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Send password reset email",
+        "operationId": "sendResetEmail",
+        "description": "Sends a password reset email to the user if the email exists in the system.",
+        "security": [],
+        "requestBody": {
+          "description": "Email of the user requesting a password reset.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "nokorest123@mail.com",
+                    "description": "The email address of the user requesting a password reset."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset email sent successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200,
+                      "description": "HTTP status code indicating the email was sent."
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Password reset instructions have been sent to your email",
+                      "description": "Confirmation message of email dispatch."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing email format.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 400,
+                      "description": "HTTP status code indicating an invalid request."
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid email format",
+                      "description": "Detailed error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Email not found in the system.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 404,
+                      "description": "HTTP status code indicating that the email is not associated with a user account."
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Email not found",
+                      "description": "Error message for a non-existing email."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/auth/reset-pwd": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Reset user password",
+        "operationId": "resetPassword",
+        "description": "Allows a user to reset their password using a valid reset token.",
+        "security": [],
+        "requestBody": {
+          "description": "Request to reset the password.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "resetToken",
+                  "newPassword"
+                ],
+                "properties": {
+                  "resetToken": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+                    "description": "Token for password reset, received via email."
+                  },
+                  "newPassword": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "Nikorest123!",
+                    "description": "The new password for the user account."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully reset the user's password.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200,
+                      "description": "HTTP status code indicating password reset success."
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Password reset successfully",
+                      "description": "Confirmation message for successful password reset."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or missing reset token or password.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 400,
+                      "description": "HTTP status code indicating a bad request."
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Invalid reset token or password format",
+                      "description": "Detailed error message."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access, expired or invalid reset token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "message"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 401,
+                      "description": "HTTP status code indicating unauthorized access."
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Reset token expired or invalid",
+                      "description": "Error message indicating token issue."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -721,40 +1594,71 @@
             "example": "https://res.cloudinary.com/dvgcgldeo/image/upload/v1749834846/photos/cykj7q14gasiokqcxqsv.jpg"
           }
         }
+      },
+      "user": {
+        "type": "object",
+        "required": [
+          "name",
+          "email",
+          "password"
+        ],
+        "properties": {
+          "_id": {
+            "description": "User's id",
+            "type": "string",
+            "example": "6850639033bb206909fcc5ce"
+          },
+          "name": {
+            "description": "User's name",
+            "type": "string",
+            "example": "Anna"
+          },
+          "email": {
+            "description": "User's email",
+            "type": "string",
+            "example": "anna21841@mail.com"
+          },
+          "password": {
+            "description": "User's password",
+            "type": "string",
+            "example": "123pwqw123"
+          },
+          "createdAt": {
+            "description": "Timestamp when the user was created",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-12-01T21:42:10Z"
+          },
+          "updatedAt": {
+            "description": "Timestamp when the user was last updated",
+            "type": "string",
+            "format": "date-time",
+            "example": "2023-12-01T22:00:10Z"
+          }
+        }
       }
     },
     "responses": {
       "400": {
-        "description": "Bad request",
+        "description": "Bad request, missing or invalid parameters.",
         "content": {
           "application/json": {
             "schema": {
               "type": "object",
               "required": [
                 "status",
-                "message",
-                "data"
+                "message"
               ],
               "properties": {
                 "status": {
                   "type": "integer",
-                  "example": 400
+                  "example": 400,
+                  "description": "HTTP status code indicating a bad request."
                 },
                 "message": {
                   "type": "string",
-                  "example": "Bad request"
-                },
-                "data": {
-                  "type": "object",
-                  "required": [
-                    "message"
-                  ],
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "example": "Bad request"
-                    }
-                  }
+                  "example": "Invalid email or password format",
+                  "description": "Detailed error message."
                 }
               }
             }
@@ -868,6 +1772,31 @@
                       "description": "Contact with contactId not found"
                     }
                   }
+                }
+              }
+            }
+          }
+        }
+      },
+      "404auth": {
+        "description": "User not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "integer",
+                  "example": 404
+                },
+                "message": {
+                  "type": "string",
+                  "example": "User not found!",
+                  "description": "User not found!"
+                },
+                "errorCode": {
+                  "type": "string",
+                  "example": "USER_NOT_FOUND"
                 }
               }
             }

@@ -1,0 +1,84 @@
+tags:
+  - Auth
+summary: Reset user password
+operationId: resetPassword
+description: Allows a user to reset their password using a valid reset token.
+security: []
+requestBody:
+  description: Request to reset the password.
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - resetToken
+          - newPassword
+        properties:
+          resetToken:
+            type: string
+            example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+            description: Token for password reset, received via email.
+          newPassword:
+            type: string
+            format: password
+            example: 'Nikorest123!'
+            description: The new password for the user account.
+responses:
+  '200':
+    description: Successfully reset the user's password.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 200
+              description: HTTP status code indicating password reset success.
+            message:
+              type: string
+              example: 'Password reset successfully'
+              description: Confirmation message for successful password reset.
+  '400':
+    description: Invalid or missing reset token or password.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 400
+              description: HTTP status code indicating a bad request.
+            message:
+              type: string
+              example: 'Invalid reset token or password format'
+              description: Detailed error message.
+  '401':
+    description: Unauthorized access, expired or invalid reset token.
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+            - message
+          properties:
+            status:
+              type: integer
+              example: 401
+              description: HTTP status code indicating unauthorized access.
+            message:
+              type: string
+              example: 'Reset token expired or invalid'
+              description: Error message indicating token issue.
+  '500':
+    description: Internal server error.
+    $ref: '../../components/responses/500.yaml'
