@@ -14,7 +14,7 @@ parameters:
       example: '65caf65a087f10c88b598395'
 requestBody:
   content:
-    application/json:
+    multipart/form-data:
       schema:
         type: object
         properties:
@@ -43,7 +43,8 @@ requestBody:
           photo:
             type: string
             description: "Contact's photo URL"
-            example: 'https://res.cloudinary.com/dvgcgldeo/image/upload/v1749834846/photos/cykj7q14gasiokqcxqsv.jpg'
+            format: binary
+            example: https://res.cloudinary.com/uqwgdu/image/upload/image.png
 responses:
   '200':
     description: Contact successfully replaced.
