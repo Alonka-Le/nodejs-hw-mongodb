@@ -251,15 +251,11 @@
                     ],
                     "example": "home"
                   },
-                  "userId": {
-                    "description": "Contact's user id",
-                    "type": "string",
-                    "example": "683c67dfcff3a8e31ad7a061"
-                  },
                   "photo": {
-                    "description": "Contact's photo",
+                    "description": "Link to contact's photo",
                     "type": "string",
-                    "example": "https://res.cloudinary.com/dvgcgldeo/image/upload/v1749834846/photos/cykj7q14gasiokqcxqsv.jpg"
+                    "format": "binary",
+                    "example": "https://res.cloudinary.com/uqwgdu/image/upload/image.png"
                   }
                 }
               }
@@ -396,7 +392,7 @@
         ],
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
                 "type": "object",
                 "properties": {
@@ -434,7 +430,8 @@
                   "photo": {
                     "type": "string",
                     "description": "Contact's photo URL",
-                    "example": "https://res.cloudinary.com/dvgcgldeo/image/upload/v1749834846/photos/cykj7q14gasiokqcxqsv.jpg"
+                    "format": "binary",
+                    "example": "https://res.cloudinary.com/uqwgdu/image/upload/image.png"
                   }
                 }
               }
@@ -503,7 +500,7 @@
         ],
         "requestBody": {
           "content": {
-            "application/json": {
+            "multipart/formdata": {
               "schema": {
                 "type": "object",
                 "properties": {
@@ -540,7 +537,8 @@
                   "photo": {
                     "type": "string",
                     "description": "Contact's photo URL",
-                    "example": "https://res.cloudinary.com/dvgcgldeo/image/upload/v1749834846/photos/cykj7q14gasiokqcxqsv.jpg"
+                    "format": "binary",
+                    "example": "https://res.cloudinary.com/uqwgdu/image/upload/image.png"
                   }
                 }
               }
